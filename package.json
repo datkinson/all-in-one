@@ -1,5 +1,5 @@
 {
-  "name": "localisation",
+  "name": "all-in-one",
   "version": "0.0.1",
   "description": "This application requires nodejs installed",
   "main": "gulpfile.js",
@@ -20,7 +20,7 @@
     "run:android": "cordova run android",
     "run:ios": "cordova run ios",
     "run:windows": "cordova run windows",
-    "install:plugins": "cordova plugin add /home/dan/Projects/BluetoothLE && cordova plugin add cordova-plugin-device"
+    "install:plugins": "cordova plugin add cordova-plugin-device"
   },
   "author": "Daniel Atkinson",
   "license": "MIT",

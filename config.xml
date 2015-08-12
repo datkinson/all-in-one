@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="link.bastet.localisation" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>Localisation</name>
+<widget id="link.bastet.allinone" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>All In One</name>
     <description>
-        A application for using bluetooth stuff.
+        A application for displaying content.
     </description>
     <author email="hourd.tasa@gmail.com" href="https://bastet.link">
         bastet team
