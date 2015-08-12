@@ -1,6 +1,12 @@
-var deviceId;
-var message = 'null';
 var enabled = false;
+var socket;
+
+var sites = [
+  'http://google.com',
+  'http://github.com'
+];
+var currentSite;
+var ref;
 var app = {
     initialize: function() {
         this.bindEvents();
@@ -20,81 +26,47 @@ var app = {
         receivedElement.setAttribute('style', 'display:block;');
 
         console.log('Received Event: ' + id);
-        deviceId = device.uuid;
-        initialiseBluetooth();
+        window.open = cordova.InAppBrowser.open;
+        // switchSite();
     }
 };
 
-function initialiseBluetooth() {
-    bluetoothle.initialize(
-        function(success){
-            console.log(success);
-            startScan();
-        },
-        function(success){
-            console.error('initialisation error: ', error);
-        },
-        {
-            "request": true,
-            "statusReceiver": true
-        }
-    );
-}
-
-function startScan() {
-    bluetoothle.startScan(scanResult, scanError, {});
-}
-
-function scanResult(result) {
-    if(result.status == "scanResult") {
-        console.log('scanning result: ', result);
-        submitReading({
-            mac: result.address,
-            client: deviceId,
-            signal: ""+result.rssi+"",
-            message: message
-        });
-    }
-
-}
-
-function scanError(error) {
-    console.error('Scanning error: ', error);
-}
-
-
-var socket = io('http://experimental.noprobe.co.uk/');
-
-socket.on('connect', function(){
-    console.debug('Socket connected');
-});
-
-function submitReading(reading) {
-    if(enabled){
-      console.log('Reading: ', reading);
-      socket.emit('submitNewLog', reading);
-    }
-}
-
-app.initialize();
-
-
-$( ".state" ).click(function() {
-  if($(this).val() == 'on') {
-    enabled = true;
-    $('.enabled').text('Enabled');
-  } else if ($(this).val() == 'off') {
-    $('.enabled').text('Disabled');
-    enabled = false;
+function switchSite() {
+  var newSite = sites[Math.floor(Math.random()*sites.length)];
+  if (newSite !== currentSite) {
+    currentSite = newSite;
+    // ref.close();
+    console.log('switching to: ' + currentSite);
+    ref = cordova.InAppBrowser.open(currentSite, '_blank', 'location=no, zoom=no');
+    setTimeout(function(){
+      switchSite();
+    }, 10000);
+  } else {
+    switchSite();
   }
-});
+}
 
-$('.distance').click(function() {
-  message = $(this).val();
-  $('.message-status').text(message);
-});
+function newSocket(url) {
+  console.log('attempting to attach to socket');
+  if(url.indexOf('http') == -1) {
+    url = 'http://' + url;
+  }
+  console.debug(socket);
+  socket = io(url);
+  console.debug(socket);
+  socket.on('connect', function(){
+    console.debug('Socket connected');
+  });
+
+  socket.on('newUrl', function(data) {
+    console.log('recieved new url: '+ data);
+    ref = cordova.InAppBrowser.open(data, '_blank', 'location=no, zoom=no');
+  });
+}
 
 $('.submit').click(function() {
-  message = $('.misc').val();
-  $('.message-status').text(message);
+  var newSite = $('.url').val();
+  newSocket(newSite);
 });
+
+app.initialize();
